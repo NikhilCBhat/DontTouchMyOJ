@@ -4,8 +4,6 @@ import threading
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-buttonState = True
-lastPressed = time.time()
 
 class buttonListener(object):
 
@@ -13,15 +11,16 @@ class buttonListener(object):
 		thread = threading.Thread(target=self.run, args=())
 		thread.daemon = True
 		thread.start()
+		self.buttonState = True
 
 	def run(self):
-		global buttonState
 		while True:
-			buttonState = GPIO.input(15)
+			self.buttonState = GPIO.input(15)
+
 
 if __name__ == "__main__":
-	buttonListener()
+
+	bl = buttonListener()
 	while True:
-		if not(buttonState) and time.time()-lastPressed > 0.2:
+		if not(bl.buttonState):
 			print("Button pressed")
-			lastPressed = time.time()

@@ -3,13 +3,19 @@ from twilio.rest import Client
 from picamera import PiCamera
 from time import sleep
 
-def takePicture(fPath="/home/pi/DontTouchMyOJ/image.jpg"):
+def getTwilloInfo(fPath):
+	with open(fPath) as fp:
+		ssid = fp.readline()
+		token = fp.readline()
+	return ssid[:-1], token[:-1]
+
+def takePicture(fPath="/home/pi/Documents/DontTouchMyOJ/image.jpg"):
 	camera = PiCamera()
 	sleep(1)
 	camera.capture(fPath)
 
-def sendPicture(client, url):
-	message = client.messages.create(body="Here is your photo :)",from_='+18604304141',media_url=[url],to='+18602667815')
+def sendPicture(client, url, fromNumber='18604304141', toNumber='18602667815'):
+	message = client.messages.create(body="Here is your photo :)",from_=fromNumber,media_url=[url],to=toNumber)
 
 def uploadFile(fName='image.jpg'):
         repo = Repo('.')
@@ -19,8 +25,9 @@ def uploadFile(fName='image.jpg'):
         origin.push()
 
 if __name__ == "__main__":
-	account_sid = 'AC7bb5f799b071be682bdcce8bb4a7fa05'
-	auth_token = '681f82064841725ff02a840d416928ef'
+
+	account_sid, auth_token = getTwilloInfo("twillo_keys.txt")
+	print(account_sid, auth_token)
 	client = Client(account_sid, auth_token)
 	url = "https://raw.githubusercontent.com/NikhilCBhat/DontTouchMyOJ/master/image.jpg"
 

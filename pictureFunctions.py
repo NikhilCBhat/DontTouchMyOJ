@@ -9,10 +9,8 @@ def getTwilloInfo(fPath):
 		token = fp.readline()
 	return ssid[:-1], token[:-1]
 
-def takePicture(fPath="/home/pi/Documents/DontTouchMyOJ/image.jpg"):
-	camera = PiCamera()
-	sleep(1)
-	camera.capture(fPath)
+def takePicture(cameraObject, fPath="/home/pi/Documents/DontTouchMyOJ/image.jpg"):
+	cameraObject.capture(fPath)
 
 def sendPicture(client, url, fromNumber='18604304141', toNumber='18602667815'):
 	message = client.messages.create(body="Here is your photo :)",from_=fromNumber,media_url=[url],to=toNumber)
@@ -24,16 +22,21 @@ def uploadFile(fName='image.jpg'):
         origin = repo.remote('origin')
         origin.push()
 
+def snapAndSend(client, co):
+        url = "https://raw.githubusercontent.com/NikhilCBhat/DontTouchMyOJ/master/image.jpg"
+        takePicture(co)
+        print("Took picture")
+        uploadFile()
+        print("Uploaded file")
+        sendPicture(client, url)
+        print("Sent text message")
+
 if __name__ == "__main__":
 
 	account_sid, auth_token = getTwilloInfo("twillo_keys.txt")
-	print(account_sid, auth_token)
 	client = Client(account_sid, auth_token)
-	url = "https://raw.githubusercontent.com/NikhilCBhat/DontTouchMyOJ/master/image.jpg"
+	camera = PiCamera()
 
-	takePicture()
-	print("Took picture")
-	uploadFile()
-	print("Uploaded file")
-	sendPicture(client, url)
-	print("Sent text")
+	snapAndSend(client, camera)
+	sleep(30)
+	snapAndSend(client, camera)

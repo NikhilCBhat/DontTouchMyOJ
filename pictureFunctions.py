@@ -1,9 +1,10 @@
-from git import Repo
+#from git import Repo
 from twilio.rest import Client
-from picamera import PiCamera
+#from picamera import PiCamera
 from time import sleep
+from imgurpython import ImgurClient
 
-def getTwilloInfo(fPath):
+def getAPIKeys(fPath):
 	with open(fPath) as fp:
 		ssid = fp.readline()
 		token = fp.readline()
@@ -15,28 +16,24 @@ def takePicture(cameraObject, fPath="/home/pi/Documents/DontTouchMyOJ/image.jpg"
 def sendPicture(client, url, fromNumber='18604304141', toNumber='18602667815'):
 	message = client.messages.create(body="Here is your photo :)",from_=fromNumber,media_url=[url],to=toNumber)
 
-def uploadFile(fName='image.jpg'):
-        repo = Repo('.')
-        repo.index.add([fName])
-        repo.index.commit('Auto image commit from python script')
-        origin = repo.remote('origin')
-        origin.push()
+def uploadFile(client, fName='image.jpg'):
+	image = client.upload_from_path(fName, anon=False)
+	return image['link']
 
 def snapAndSend(client, co):
-        url = "https://raw.githubusercontent.com/NikhilCBhat/DontTouchMyOJ/master/image.jpg"
         takePicture(co)
         print("Took picture")
-        uploadFile()
+        url = uploadFile()
         print("Uploaded file")
         sendPicture(client, url)
         print("Sent text message")
 
 if __name__ == "__main__":
 
-	account_sid, auth_token = getTwilloInfo("twillo_keys.txt")
-	client = Client(account_sid, auth_token)
-	camera = PiCamera()
+	twilioSid, twilioToken = getAPIKeys("twillo_keys.txt")
+	twilioClient = Client(twilioSid, twilioToken)
+	imgurID, imgurKey = getAPIKeys("imgur_keys.txt")
+	imgurClient = ImgurClient(imgurID, imgurKey)
 
-	snapAndSend(client, camera)
-	sleep(30)
-	snapAndSend(client, camera)
+	url = uploadFile(imgurClient, fName="getPath.png")
+	sendPicture(twilioClient, url)

@@ -4,6 +4,12 @@ import time
 from pushButton import buttonListener
 from detectFace import sameFace
 import png
+from pictureFunctions import sendPicture, getAPIKeys, uploadFile
+
+twilioSid, twilioToken = getAPIKeys("twillo_keys.txt")
+twilioClient = Client(twilioSid, twilioToken)
+imgurID, imgurKey = getAPIKeys("imgur_keys.txt")
+imgurClient = ImgurClient(imgurID, imgurKey)
 
 camera = picamera.PiCamera()
 print(camera.resolution)
@@ -43,6 +49,8 @@ if __name__ == "__main__":
 
             if not foundNikhil:
                 if someoneElse is not None:
+                     url = uploadFile(imgurClient, fName=str(someoneElse)+".jpg")
+                     sendPicture(twilioClient, url)
                      print("Someone else took your OJ check frame",someoneElse)
                 else:
                      print("No one found!")

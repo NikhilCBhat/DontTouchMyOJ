@@ -6,8 +6,8 @@ from detectFace import sameFace
 import png
 
 camera = picamera.PiCamera()
-camera.resolution = (320, 240)
-frames = [np.empty((240, 320, 3), dtype=np.uint8) for _ in range(30)]
+print(camera.resolution)
+#camera.resolution = (320, 240)
 someoneElse = None
 
 if __name__ == "__main__":
@@ -23,30 +23,30 @@ if __name__ == "__main__":
         foundNikhil = False
 
         if time.time() - captureTime > 1:
-            camera.capture(frames[i], format="rgb")
+            camera.capture(str(i)+".jpg")
             captureTime = time.time()
+            i += 1
 
         if not(bl.buttonState) and time.time() - pressedTime > 0.2:
 
             print("button pressed")
 
-            for frame in frames:
-                ret = sameFace(image=frame)
+            for j in range(30):
+                ret = sameFace(filePath=str(j)+".jpg")
                 if len(ret) > 1:
                     if any(ret):
-                        print("It's nikhil so nbd")
-                        png.from_array(frame, 'L').save("nikhilsface.png")
+                        print("Found nikhil at", j)
+                        print(ret)
                         foundNikhil = True
                         break
-                    someoneElse = frame
+                    someoneElse = j
 
             if not foundNikhil:
                 if someoneElse is not None:
-                     png.from_array(someoneElse, 'L').save("other.png")
-                     print("Someone else took your OJ")
+                     print("Someone else took your OJ check frame",someoneElse)
                 else:
                      print("No one found!")
-        i += 1
+
         someoneElse = None
         if i == 30:
             i = 0

@@ -19,8 +19,9 @@ class buttonListener(object):
 
 
 if __name__ == "__main__":
-
+	pressedTime = time.time()
 	bl = buttonListener()
 	while True:
-		if not(bl.buttonState):
+		if not(bl.buttonState) and time.time() - pressedTime > 0.2:
 			print("Button pressed")
+			pressedTime = time.time()

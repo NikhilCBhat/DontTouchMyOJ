@@ -23,8 +23,10 @@ def vprint(a):
 ## -- Main -- ##
 if __name__ == "__main__":
 
+    vprint("Entered Main")
+
     ## Create twilio & imgur clients
-    twilioSid, twilioToken = getAPIKeys("twillo_keys.txt")
+    twilioSid, twilioToken = getAPIKeys("twilio_keys.txt")
     twilioClient = Client(twilioSid, twilioToken)
     imgurID, imgurKey = getAPIKeys("imgur_keys.txt")
     imgurClient = ImgurClient(imgurID, imgurKey)
@@ -78,7 +80,7 @@ if __name__ == "__main__":
                 if someoneElse is not None:
                     uploadAndSend(imgurClient, twilioClient, str(someoneElse)+".jpg")
                     vprint("Someone else took your OJ check frame %s"%someoneElse)
-                
+
                 ## Otherwise just send a message
                 else:
                     sendMessage(twilioClient)

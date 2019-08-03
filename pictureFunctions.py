@@ -1,6 +1,5 @@
-#from git import Repo
 from twilio.rest import Client
-#from picamera import PiCamera
+from picamera import PiCamera
 from time import sleep
 from imgurpython import ImgurClient
 
@@ -20,12 +19,12 @@ def uploadFile(client, fName='image.jpg'):
 	image = client.upload_from_path(fName, anon=False)
 	return image['link']
 
-def snapAndSend(client, co):
+def snapAndSend(tclient,iclient, co):
         takePicture(co)
         print("Took picture")
-        url = uploadFile()
+        url = uploadFile(iclient)
         print("Uploaded file")
-        sendPicture(client, url)
+        sendPicture(tclient, url)
         print("Sent text message")
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ def getAPIKeys(fPath):
 def takePicture(cameraObject, fPath="/home/pi/Documents/DontTouchMyOJ/image.jpg"):
 	cameraObject.capture(fPath)
 
-def sendPicture(client, url, fromNumber='18604304141', toNumber='18602667815'):
+def sendPicture(client, url, fromNumber='14132878699', toNumber='18608164865'):
 	message = client.messages.create(body="Here is your photo :)",from_=fromNumber,media_url=[url],to=toNumber)
 
 def uploadFile(client, fName='image.jpg'):
@@ -35,5 +35,5 @@ if __name__ == "__main__":
 	imgurID, imgurKey = getAPIKeys("imgur_keys.txt")
 	imgurClient = ImgurClient(imgurID, imgurKey)
 
-	url = uploadFile(imgurClient, fName="getPath.png")
+	url = uploadFile(imgurClient, fName="image.jpg")
 	sendPicture(twilioClient, url)

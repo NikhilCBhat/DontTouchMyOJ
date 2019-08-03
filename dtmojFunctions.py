@@ -12,7 +12,7 @@ def getAPIKeys(fName):
     return ssid[:-1], token[:-1]
 
 ## Uses Twilio to send a message to your phone number
-def sendPicture(twilioClient, url=None, fromNumber='14132878699', toNumber='18608164865'):
+def sendMessage(twilioClient, url=None, fromNumber='14132878699', toNumber='18608164865'):
 	twilioClient.messages.create(body="This person took your OJ!",from_=fromNumber,media_url=[url],to=toNumber)
 
 ## Uploads a file to imgur
@@ -24,4 +24,4 @@ def uploadFile(imgurClient, fName):
 ## Convenient wrapper for the above two functions
 def uploadAndSend(iClient, tClient, fName):
     url = uploadFile(iClient, fName)
-    sendPicture(tClient, url)
+    sendMessage(tClient, url)

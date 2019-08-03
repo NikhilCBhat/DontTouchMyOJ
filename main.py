@@ -1,12 +1,13 @@
+import time
+import argparse
 import picamera
 import numpy as np
-import time
-from pushButton import buttonListener
-from detectFace import sameFace
-from pictureFunctions import sendPicture, getAPIKeys, uploadFile
-import argparse
 from imgurpython import ImgurClient
 from twilio.rest import Client
+
+from detectFace import sameFace
+from pushButton import buttonListener
+from dtmojFunctions import getAPIKeys, uploadFile, uploadAndSend, sendMessage
 
 ## Add verbose argument
 parser = argparse.ArgumentParser(description='Use --verbose <True> to print debugging output')
@@ -57,7 +58,6 @@ if __name__ == "__main__":
 
             vprint("button pressed")
 
-
             ## Runs face detection on each image
             for i in range(30):
                 ret = sameFace(filePath=str(i)+".jpg")
@@ -76,12 +76,12 @@ if __name__ == "__main__":
 
                 ## If you found someone else, send their picture
                 if someoneElse is not None:
-                    url = uploadFile(imgurClient, fName=str(someoneElse)+".jpg")
-                    sendPicture(twilioClient, url)
+                    uploadAndSend(imgurClient, twilioClient, str(someoneElse)+".jpg")
                     vprint("Someone else took your OJ check frame %s"%someoneElse)
                 
                 ## Otherwise just send a message
                 else:
+                    sendMessage(twilioClient)
                     vprint("No one found!")
 
         someoneElse = None

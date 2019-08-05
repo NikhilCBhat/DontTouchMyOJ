@@ -1,3 +1,9 @@
+'''
+Push Button Class for DontTouchMyOJ
+Run this script by itself to test 
+whether your wiring for the button works as intended
+'''
+
 import RPi.GPIO as GPIO
 import time
 import threading

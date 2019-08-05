@@ -1,5 +1,4 @@
 # DontTouchMyOJ
-_Currently a work in progress._
 
 ### About:
 A fridge "security system" consisting of a Raspberry Pi with a Camera Module which will text the user when Orange Juice has been taken from the fridge by a roommate. This system can be used for any security purpose in any location - not necessarily OJ in the fridge :)

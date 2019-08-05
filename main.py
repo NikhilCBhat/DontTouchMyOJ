@@ -1,3 +1,7 @@
+'''
+Main code for DontTouchMyOJ
+'''
+
 import time
 import argparse
 import picamera
@@ -33,12 +37,13 @@ if __name__ == "__main__":
 
     ## Createa a reference to the Pi Camera
     camera = picamera.PiCamera()
-    someoneElse = None
 
     ## Start the button listener
     bl = buttonListener()
 
-    ## Initialize the time & image variables
+    ## Initialize variables
+    strangerPhoto = None
+    previouslyPressed = True
     imageIndex = 0
     pressedTime = time.time()
     captureTime = time.time()
@@ -55,37 +60,45 @@ if __name__ == "__main__":
             captureTime = time.time()
             imageIndex += 1
 
-        ## If the button has been pressed
-        if not(bl.buttonState) and time.time() - pressedTime > 0.2:
+        ## If the OJ has been taken - detected when
+        ## the button has been released, but it was previously pressed
+        if bl.buttonState and previouslyPressed and time.time() - pressedTime > 0.2:
 
             vprint("button pressed")
+            previouslyPressed = False
 
             ## Runs face detection on each image
             for i in range(30):
                 ret = sameFace(filePath=str(i)+".jpg")
 
-                ## If the list is length 1 or 0, no faces were found
-                if len(ret) > 1:
+                ## If the list is length 0, no faces were found
+                if len(ret):
                     if any(ret):
                         vprint("Found nikhil at %s"%i)
                         vprint(ret)
                         foundNikhil = True
                         break
-                    someoneElse = i
+                    strangerPhoto = i
 
             ## If you didn't find Nikhil - send a text
             if not foundNikhil:
 
                 ## If you found someone else, send their picture
-                if someoneElse is not None:
-                    uploadAndSend(imgurClient, twilioClient, str(someoneElse)+".jpg")
-                    vprint("Someone else took your OJ check frame %s"%someoneElse)
+                if strangerPhoto is not None:
+                    uploadAndSend(imgurClient, twilioClient, str(strangerPhoto)+".jpg")
+                    vprint("Someone else took your OJ check frame %s"%strangerPhoto)
 
                 ## Otherwise just send a message
                 else:
                     sendMessage(twilioClient)
                     vprint("No one found!")
+            
+            ## Once the OJ has been returned, and the button is pressed again
+            ## update the previously pressed variable
+            elif not(b1.buttonState):
+                previouslyPressed = True
 
-        someoneElse = None
+        ## Reset the variables at the end of the loop
+        strangerPhoto = None
         if imageIndex == 30:
             imageIndex = 0

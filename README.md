@@ -30,7 +30,7 @@ A fridge "security system" consisting of a Raspberry Pi with a Camera Module whi
 ### How it Works:
 
 #### Texting Images
-1) The image is uploaded to this Git repository to the file image.jpg using GitPython.
+1) The image is uploaded to Imgur using the Imgur API.
 2) Using the Twillo python library, this image is made into a media URL and then the MMS message is sent to the target phone number.
 
 #### Detecting Taken OJ
